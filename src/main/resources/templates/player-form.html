@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Cadastro de Jogadores do UOL</title>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"></link>
+		<link href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+		<style>
+			ul {
+				list-style-type:none;
+			}
+		</style>
+		<script>
+			$(document).ready(function() {
+				var maskBehavior = function (val) {
+			    	return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+			  	},
+			  	maskOptions = {
+			    	onKeyPress: function(val, e, field, options) {
+			        	field.mask(maskBehavior.apply({}, arguments), options);
+			      	}
+			  	};
+	
+			  	$('#telephone').mask(maskBehavior, maskOptions);
+			  	
+				$(document).ready(
+					function(){
+						$("#unavaible").modal("show");
+					}
+				);
+			});
+		
+		</script>
+	</head>
+	<body>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Cadastro do jogador UOL</strong>
+			</div>
+			<div class="panel-body">
+				<form class="form-horizontal" th:object="${player}" th:action="@{/save}" method="POST" style="margin: 10px">
+					<div class="form-group">
+						<fieldset>
+	 						<div th:if="${player.id} != 0" class="form-group row">
+							    <div class="col-md-1">
+							    	<label>Id</label>
+							        <input type="text" class="form-control input-sm" th:field="*{id}" readOnly="readonly"/>
+							    </div>
+							</div>						
+							<div class="form-group row">                                                          
+								<div class="col-md-4" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
+								    <label>Nome</label>
+								    <input type="text" class="form-control input-sm" th:field="*{name}" autofocus="autofocus" placeholder="Seu nome" maxlength="50"/>
+								    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="col-md-4" th:classappend="${#fields.hasErrors('email')}? 'has-error'">
+									<label>E-mail</label> 
+									<input type="text" class="form-control input-sm" th:field="*{email}" maxlength="150" placeholder="seuemail@uol.com.br"/>
+									<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="col-md-4" th:classappend="${#fields.hasErrors('telephone')}? 'has-error'">
+									<label>Telefone</label> 
+									<input type="text" class="form-control input-sm" th:field="*{telephone}" maxlength="15" placeholder="(99) 99999-9999"/>
+									<span th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}" class="text-danger"></span>
+								</div>
+							</div>
+							<div th:if="${player.id} != 0" class="form-group row">
+							    <div class="col-md-4">
+							    	<label>Codinome</label>
+							        <input type="text" class="form-control input-sm" th:field="*{codename}" readOnly="readonly"/>
+							    </div>
+							</div>	
+							<div class="form-group row">
+								<div class="col-md-4">
+									<label>Quero ser do grupo:</label>
+									<ul>
+										<li class="form-check" th:each="pg: ${playerGroups}">
+											<div class="radio" th:classappend="${player.id} != 0 ? disabled : ''">
+										    	<input class="form-check-input" type="radio" th:field="*{playerGroup}" th:value="${pg.id}" th:disabled="${player.id} != 0"/>
+										    	<label class="form-check-label" th:for="${#ids.prev('playerGroup')}" th:text="${pg.name}"></label>
+										    </div>
+										</li>
+									</ul>
+		    	     			    <span th:if="${#fields.hasErrors('playerGroup')}" th:errors="*{playerGroup}" class="text-danger"></span>
+								</div>
+								<input th:if="${player.id} != 0" type="hidden" th:field="*{playerGroup}"/>
+							</div>
+						</fieldset>
+					</div>
+					<div class="form-group row">
+						<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i>&nbsp;Salvar</button>
+						<a th:href="@{/}" class="btn btn-sm btn-default"><i class="fa fa-angle-left"></i>&nbsp;Voltar</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	
+		<div th:if="${unavailablePlayerGroup != null}" class="modal modal-warning fade in" id="unavaible">
+			<div class="modal-dialog">
+		 		<div class="modal-content">
+		 			<div class="modal-header">
+		 				<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+		 					<span aria-hidden="true">×</span>
+		 				</button>
+		 				<h4 class="modal-title">Atenção</h4>
+		 			</div>
+		 			<div class="modal-body">
+		 				<h4>O grupo <span style="font-weight: bold;" th:text="${unavailablePlayerGroup.name}"></span> não possui mais codinomes disponíveis.</h4>
+		 			</div>
+		 			<div class="modal-footer">
+		 				<button type="button" class="btn btn-outline pull-right" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Fechar</button>
+		 			</div>
+		 		</div>
+		 	</div>
+		</div>
+	</body>
+</html>

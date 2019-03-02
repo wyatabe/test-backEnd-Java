@@ -1,0 +1,2 @@
+INSERT INTO tb_player_group VALUES (1, 'Liga da Justiça', 'https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/liga_da_justica.xml');
+INSERT INTO tb_player_group VALUES (2, 'Os Vingadores', 'https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/vingadores.json');

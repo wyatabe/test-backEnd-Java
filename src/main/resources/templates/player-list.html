@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Cadastro de Jogadores do UOL</title>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"></link>
+		<link href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(
+				function(){
+					$("#success").modal("show");
+				}
+			);
+		</script>
+	</head>
+	<body>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Jogadores cadastrados</strong>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-sm table-striped table-hover table-bordered">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Nome</th>
+								<th>E-mail</th>
+								<th>Telefone</th>
+								<th>Codinome</th>
+								<th>Grupo</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="player : ${players}">
+								<td th:text="${player.id}"></td>
+								<td th:text="${player.name}"></td>
+								<td th:text="${player.email}"></td>
+								<td th:text="${player.telephone}"></td>
+								<td th:text="${player.codename}"></td>
+								<td th:text="${player.playerGroup.name}"></td>
+								<td>
+									<div class="btn-group pull-right">
+								   		<a class="btn btn-sm btn-primary" th:href="@{/edit/{id}(id=${player.id})}"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Editar</a>
+								   		<a class="delete btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-warning" th:attr="data-target='#modal-warning'+${player.id }"><span class="glyphicon glyphicon-trash"></span>&nbsp;Excluir</a>
+								   	</div>
+									<div class="modal modal-warning fade in" th:id="modal-warning+${player.id }" >
+									    <div class="modal-dialog">
+									        <div class="modal-content">
+									            <div class="modal-header">
+									                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+									                    <span aria-hidden="true">×</span>
+									              	</button>
+									                <h4 class="modal-title">Excluir Jogador</h4>
+									            </div>
+									            <div class="modal-body">
+									                <h5>Você realmente deseja excluir o jogador <span style="font-weight: bold;" th:text="${player.name}"></span>?</h5>
+									            </div>
+									            <div class="modal-footer">
+									                <button type="button" class="btn btn-outline" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Não</button>
+									                <a type="button" class="btn btn-danger" th:href="@{/delete/{id}(id=${player.id})}"><i class="fa fa-check"></i>&nbsp;Sim</a>
+									            </div>
+									        </div>
+									    </div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a class="btn btn-sm btn-success" th:href="@{/add/}"><i class="fa fa-plus"></i>&nbsp;Cadastrar</a>
+			</div>
+		</div>
+		
+		<div th:if="${newPlayer != null || editPlayer != null}" class="modal modal-warning fade in" id="success">
+			<div class="modal-dialog">
+		 		<div class="modal-content">
+		 			<div class="modal-header">
+		 				<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+		 					<span aria-hidden="true">×</span>
+		 				</button>
+		 				<h4 th:if="${newPlayer != null}" class="modal-title">Jogador Cadastrado</h4>
+		 				<h4 th:if="${editPlayer != null}" class="modal-title">Jogador Atualizado</h4>
+		 			</div>
+		 			<div class="modal-body">
+		 				<h5 th:if="${newPlayer != null}">O jogador <span style="font-weight: bold;" th:text="${newPlayer.name}"></span> foi cadastrado com sucesso.</h5>
+		 				<h5 th:if="${editPlayer != null}">O jogador <span style="font-weight: bold;" th:text="${editPlayer.name}"></span> foi atualizado com sucesso.</h5>
+		 			</div>
+		 			<div class="modal-footer">
+		 				<button type="button" class="btn btn-outline pull-right" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Fechar</button>
+		 			</div>
+		 		</div>
+		 	</div>
+		</div>
+	</body>
+</html>
