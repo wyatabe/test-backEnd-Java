@@ -14,6 +14,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -33,8 +35,8 @@ public class PlayerService {
 	@Autowired
 	private PlayerRepository repository;
 	
-	public Iterable<Player> findAll() {
-		return repository.findAll();
+	public Page<Player> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 	
 	public Optional<Player> findOne(Long id) {
@@ -49,6 +51,23 @@ public class PlayerService {
 		repository.deleteById(id);
 	}
 	
+	public Page<Player> findByWord(String word, Pageable pageable) {
+		return repository.findByWord("%"+word.toLowerCase()+"%", pageable);
+	}
+	
+	public boolean exists(String field, String value) {
+		if (field.equals("name")) {
+			return repository.existsByName(value);
+		}
+		if (field.equals("email")) {
+			return repository.existsByEmail(value);
+		}
+		if (field.equals("telephone")) {
+			return repository.existsByTelephone(value);
+		}
+		return false;
+	}
+		
 	public String getCodename(PlayerGroup playerGroup) {
 		String codename = "";
 		List<String> codenameList = new ArrayList<String>();
@@ -85,7 +104,7 @@ public class PlayerService {
 			
 			inputStream.close();
 			
-			List<Player> playerList = repository.findByPlayerGroupAndCodenameIn(playerGroup, codenameList);
+			List<Player> playerList = repository.findByPlayerGroup(playerGroup);
 			
 			if (playerList != null && !playerList.isEmpty()) {
 				List<String> codenamePlayers = playerList.stream().map(p -> p.getCodename()).collect(Collectors.toList());

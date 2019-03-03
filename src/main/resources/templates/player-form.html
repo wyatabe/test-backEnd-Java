@@ -12,7 +12,12 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
 		<style>
 			ul {
-				list-style-type:none;
+				list-style-type: none;
+			}
+			
+			.form-group.row.required .control-label:before { 
+   				content:" *";
+   				color: red;
 			}
 		</style>
 		<script>
@@ -48,40 +53,40 @@
 						<fieldset>
 	 						<div th:if="${player.id} != 0" class="form-group row">
 							    <div class="col-md-1">
-							    	<label>Id</label>
+							    	<label class="control-label">Id</label>
 							        <input type="text" class="form-control input-sm" th:field="*{id}" readOnly="readonly"/>
 							    </div>
 							</div>						
-							<div class="form-group row">                                                          
+							<div class="form-group row required">                                                          
 								<div class="col-md-4" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
-								    <label>Nome</label>
+								    <label class="control-label">Nome</label>
 								    <input type="text" class="form-control input-sm" th:field="*{name}" autofocus="autofocus" placeholder="Seu nome" maxlength="50"/>
 								    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
 								</div>
 							</div>
-							<div class="form-group row">
+							<div class="form-group row required">
 								<div class="col-md-4" th:classappend="${#fields.hasErrors('email')}? 'has-error'">
-									<label>E-mail</label> 
+									<label class="control-label">E-mail</label> 
 									<input type="text" class="form-control input-sm" th:field="*{email}" maxlength="150" placeholder="seuemail@uol.com.br"/>
 									<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="form-group row">
 								<div class="col-md-4" th:classappend="${#fields.hasErrors('telephone')}? 'has-error'">
-									<label>Telefone</label> 
+									<label class="control-label">Telefone</label> 
 									<input type="text" class="form-control input-sm" th:field="*{telephone}" maxlength="15" placeholder="(99) 99999-9999"/>
 									<span th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}" class="text-danger"></span>
 								</div>
 							</div>
 							<div th:if="${player.id} != 0" class="form-group row">
 							    <div class="col-md-4">
-							    	<label>Codinome</label>
+							    	<label class="control-label">Codinome</label>
 							        <input type="text" class="form-control input-sm" th:field="*{codename}" readOnly="readonly"/>
 							    </div>
 							</div>	
-							<div class="form-group row">
+							<div class="form-group row" th:classappend="${player.id} == 0 ? required : ''">
 								<div class="col-md-4">
-									<label>Quero ser do grupo:</label>
+									<label class="control-label">Quero ser do grupo:</label>
 									<ul>
 										<li class="form-check" th:each="pg: ${playerGroups}">
 											<div class="radio" th:classappend="${player.id} != 0 ? disabled : ''">

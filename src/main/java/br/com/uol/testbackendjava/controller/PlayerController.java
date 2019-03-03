@@ -1,8 +1,16 @@
 package br.com.uol.testbackendjava.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import br.com.uol.testbackendjava.model.Player;
@@ -26,8 +35,21 @@ public class PlayerController {
 	private PlayerGroupService playerGroupService;
 	
 	@GetMapping("/")
-	public String list(Model model) {
-		model.addAttribute("players", playerService.findAll());		
+	public String list(@RequestParam(value = "search", required = false) String search, @PageableDefault(size = 10, sort = "id") Pageable pageable, Model model) {
+		Page<Player> page = null;
+		if (StringUtils.isEmptyOrWhitespace(search)) {
+			page = playerService.findAll(pageable);
+		} else {
+			page = playerService.findByWord(search, pageable);
+		}
+		List<Sort.Order> sortOrders = page.getSort().stream().collect(Collectors.toList());
+		if (sortOrders.size() > 0) {
+			Sort.Order order = sortOrders.get(0);
+			model.addAttribute("sortProperty", order.getProperty());
+			model.addAttribute("sortDesc", order.getDirection() == Sort.Direction.DESC);
+		}
+		model.addAttribute("page", page);
+		model.addAttribute("search", search != null ? search : "");
 		return "player-list";
 	}
 	
@@ -47,7 +69,7 @@ public class PlayerController {
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Long id, Model model) {
 		playerService.delete(id);
-		return list(model);
+		return "redirect:/";
 	}
 
 	@PostMapping("/save")
@@ -66,7 +88,7 @@ public class PlayerController {
 		}
 		model.addAttribute(player.getId() == 0 ? "newPlayer" : "editPlayer", player);
 		player = playerService.save(player);
-		return list(model);
+		return list(null, PageRequest.of(0, 10, Sort.by("id")), model);
 	}
 
 }

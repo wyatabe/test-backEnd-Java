@@ -9,13 +9,106 @@
 		<link href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script type="text/javascript">
+		<script th:inline="javascript">
+			//thymeleaf to javascript variables
+		    /*<![CDATA[*/
+		    var sortProperty = /*[[${sortProperty}]]*/ null;
+		    var sortDesc = /*[[${sortDesc}]]*/ null;
+		    var currentPage = /*[[${page.number}]]*/ 0;
+		    var pageSize = /*[[${page.size}]]*/ 0;
+		    var search = /*[[${search}]]*/ '';
+		    /*]]>*/
+		
 			$(document).ready(
-				function(){
+				function() {
 					$("#success").modal("show");
+					
+					$("#searchclear").click(function(){
+					    $("#search").val('');
+					});
+					
+					//show up/down arrows
+					$("table#player-table thead th").each(
+						function() {
+							var head = $(this);
+							if (head.attr('data-sort-prop') == sortProperty) {
+								head.append(sortDesc ? '▾' : '▴');
+							}
+						}
+					);
+	
+					//set click action, reload page on clicking with all query params
+					$("table#player-table thead th").click(
+						function() {
+							var headerSortPropName = $(this).attr("data-sort-prop");
+							if (headerSortPropName == sortProperty) {
+								window.location.href = window.location.pathname	+ '?page=' + currentPage + '&size='	+ pageSize + '&sort=' + headerSortPropName + ',' + (sortDesc ? 'asc' : 'desc') + '&search=' + search;
+							} else {
+								window.location.href = window.location.pathname	+ '?page=' + currentPage + '&size='	+ pageSize + '&sort=' + headerSortPropName + ',asc' + '&search=' + search;
+							}
+						}
+					);
 				}
 			);
 		</script>
+		<style>
+			table {
+				width: 100%;
+			}
+			
+			table td, table th {
+				border: 1px solid grey;
+			}
+			
+			table th {
+				user-select: none;
+				background: #eee;
+			}
+			
+			table tr th:first-child {
+				width: 100px;
+			}
+			
+			table tr th:nth-child(3) {
+				width: 150px;
+			}
+			
+			table tr th:nth-child(4) {
+				width: 150px;
+			}
+			
+			.pagination-div {
+				user-select: none;
+			}
+			
+			.pagination-div span {
+				border-radius: 3px;
+				border: 1px solid #999;
+				padding: 5px;
+				margin: 10px 0px 0px 10px;
+				display: inline-block
+			}
+			
+			span.selected {
+				background: #ccf;
+			}
+			
+			#searchinput {
+				width: 200px;
+			}
+			
+			#searchclear {
+				position: absolute;
+				right: 5px;
+				top: 0;
+				bottom: 0;
+				height: 14px;
+				margin: auto;
+				font-size: 14px;
+				cursor: pointer;
+				color: #ccc;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="panel panel-default">
@@ -23,20 +116,30 @@
 				<strong>Jogadores cadastrados</strong>
 			</div>
 			<div class="panel-body">
+			    <form action="#" th:action="@{/}" method="get">
+			    	<p>
+						<div class="btn-group">
+	  						<input type="text" class="form-control input-sm" maxlength="150" id="search" name="search" th:value="${search}"/>
+	  						<span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
+						</div>
+	    				<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>&nbsp;Buscar</button>
+	    			</p>
+		        </form>
+			    
 				<div class="table-responsive">
-					<table class="table table-sm table-striped table-hover table-bordered">
+					<table id="player-table" class="table table-sm table-striped table-hover table-bordered">
 						<thead>
 							<tr>
-								<th>Id</th>
-								<th>Nome</th>
-								<th>E-mail</th>
-								<th>Telefone</th>
-								<th>Codinome</th>
-								<th>Grupo</th>
+								<th data-sort-prop="id">Id</th>
+								<th data-sort-prop="name">Nome</th>
+								<th data-sort-prop="email">E-mail</th>
+								<th data-sort-prop="telephone">Telefone</th>
+								<th data-sort-prop="codename">Codinome</th>
+								<th data-sort-prop="playerGroup.name">Grupo</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="player : ${players}">
+							<tr th:if="${!page.content.empty}" th:each="player : ${page.content}">
 								<td th:text="${player.id}"></td>
 								<td th:text="${player.name}"></td>
 								<td th:text="${player.email}"></td>
@@ -69,8 +172,26 @@
 									</div>
 								</td>
 							</tr>
+							<tr th:if="${page.content.empty}">
+								<td colspan="6">Não há jogadores cadastrados.</td>
+							</tr>
 						</tbody>
 					</table>
+					<!-- using th:with to declare a local variable for sorting query param -->
+					<div th:if="${!page.content.empty}" class="pagination-div" th:with="sortParam=${sortProperty+','+(sortDesc?'desc':'asc')}">
+					    <span th:if="${page.hasPrevious()}">
+					        <a th:href="@{/(page=${page.number-1},size=${page.size},sort=${sortParam},search=${search})}">Anterior</a>
+					    </span>
+					    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+					        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+					        <span th:unless="${page.number == i}">
+					        	<a th:href="@{/(page=${i},size=${page.size},sort=${sortParam},search=${search})}">[[${i}+1]]</a>
+					        </span>
+					    </th:block>
+					    <span th:if="${page.hasNext()}">
+					    	<a th:href="@{/(page=${page.number+1},size=${page.size},sort=${sortParam},search=${search})}">Próximo</a>
+					    </span>
+					</div>
 				</div>
 			</div>
 			<div class="panel-footer">

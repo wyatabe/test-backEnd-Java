@@ -14,6 +14,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.com.uol.testbackendjava.validator.Unique;
+
 @Entity(name = "tb_player")
 public class Player implements Serializable {
 	/**
@@ -28,14 +30,17 @@ public class Player implements Serializable {
 	@NotBlank(message = "O Nome é obrigatório.")
 	@Size(min = 2, message = "O nome deve possuir no mínimo {min} caracteres.")
 	@Column(nullable = false)
+	@Unique(field = "name", message = "Nome de jogador já cadastrado.")
 	private String name;
 
 	@NotBlank(message = "O E-mail é obrigatório.")
 	@Email(message = "Informe um e-mail válido.")
 	@Column(nullable = false)
+	@Unique(field = "email", message = "E-mail já cadastrado.")
 	private String email;
 	
 	@Size(min = 14, message = "O telefone deve possuir no mínimo {min} dígitos.")
+	@Unique(field = "telephone", message = "Telefone já cadastrado.")
 	private String telephone;
 	
 	private String codename;
