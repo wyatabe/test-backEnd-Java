@@ -3,8 +3,6 @@ package br.com.uol.testbackendjava.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +23,8 @@ import org.thymeleaf.util.StringUtils;
 import br.com.uol.testbackendjava.model.Player;
 import br.com.uol.testbackendjava.service.PlayerGroupService;
 import br.com.uol.testbackendjava.service.PlayerService;
+import br.com.uol.testbackendjava.validator.OnCreate;
+import br.com.uol.testbackendjava.validator.OnUpdate;
 
 @Controller
 public class PlayerController {
@@ -72,11 +73,23 @@ public class PlayerController {
 		return "redirect:/";
 	}
 
-	@PostMapping("/save")
-	public String save(@ModelAttribute @Valid Player player, BindingResult result, Model model) {
+	@PostMapping("/create")
+	public String create(@ModelAttribute @Validated({OnCreate.class}) Player player, BindingResult result, Model model) {
 		if(result.hasErrors()) {
 			return add(player, model);
 		}
+		return save(player, model);
+	}
+	
+	@PostMapping("/update")
+	public String update(@ModelAttribute @Validated({OnUpdate.class}) Player player, BindingResult result, Model model) {
+		if(result.hasErrors()) {
+			return add(player, model);
+		}
+		return save(player, model);
+	}
+
+	public String save(Player player, Model model) {
 		if (StringUtils.isEmpty(player.getCodename())) {
 			String codename = playerService.getCodename(player.getPlayerGroup());
 			if (!StringUtils.isEmpty(codename)) {
@@ -90,5 +103,4 @@ public class PlayerController {
 		player = playerService.save(player);
 		return list(null, PageRequest.of(0, 10, Sort.by("id")), model);
 	}
-
 }

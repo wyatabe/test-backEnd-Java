@@ -48,7 +48,7 @@
 				<strong>Cadastro do jogador UOL</strong>
 			</div>
 			<div class="panel-body">
-				<form class="form-horizontal" th:object="${player}" th:action="@{/save}" method="POST" style="margin: 10px">
+				<form class="form-horizontal" th:object="${player}" th:action="${player.id} == 0 ? @{/create} : @{/update}" method="POST" style="margin: 10px">
 					<div class="form-group">
 						<fieldset>
 	 						<div th:if="${player.id} != 0" class="form-group row">
