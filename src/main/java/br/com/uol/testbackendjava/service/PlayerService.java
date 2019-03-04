@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +93,7 @@ public class PlayerService {
 	
 			if (playerGroup.getUrl().endsWith("json")) {
 				JsonParser jp = new JsonParser();
-				JsonElement root = jp.parse(new InputStreamReader(inputStream));
+				JsonElement root = jp.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 				JsonObject rootobj = root.getAsJsonObject();
 				JsonArray vingadores = rootobj.get("vingadores").getAsJsonArray();
 	
