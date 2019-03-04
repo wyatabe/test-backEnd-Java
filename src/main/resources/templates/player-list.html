@@ -42,9 +42,9 @@
 						function() {
 							var headerSortPropName = $(this).attr("data-sort-prop");
 							if (headerSortPropName == sortProperty) {
-								window.location.href = window.location.pathname	+ '?page=' + currentPage + '&size='	+ pageSize + '&sort=' + headerSortPropName + ',' + (sortDesc ? 'asc' : 'desc') + '&search=' + search;
+								window.location.href = '/?page=' + currentPage + '&size='	+ pageSize + '&sort=' + headerSortPropName + ',' + (sortDesc ? 'asc' : 'desc') + '&search=' + search;
 							} else {
-								window.location.href = window.location.pathname	+ '?page=' + currentPage + '&size='	+ pageSize + '&sort=' + headerSortPropName + ',asc' + '&search=' + search;
+								window.location.href = '/?page=' + currentPage + '&size='	+ pageSize + '&sort=' + headerSortPropName + ',asc' + '&search=' + search;
 							}
 						}
 					);
