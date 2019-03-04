@@ -25,6 +25,10 @@ public class Player implements Serializable {
 	 */
 	private static final long serialVersionUID = 2034684911064206940L;
 	
+	public Player() {
+		super();
+	}
+
 	public Player(long id, String name, String email, String telephone, PlayerGroup playerGroup) {
 		super();
 		this.id = id;

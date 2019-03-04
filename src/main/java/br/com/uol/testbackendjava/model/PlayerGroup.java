@@ -12,6 +12,10 @@ public class PlayerGroup implements Serializable {
 	 */
 	private static final long serialVersionUID = 5574454007818108708L;
 	
+	public PlayerGroup() {
+		super();
+	}
+
 	public PlayerGroup(long id) {
 		super();
 		this.id = id;
