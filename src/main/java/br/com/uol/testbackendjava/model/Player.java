@@ -24,6 +24,25 @@ public class Player implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2034684911064206940L;
+	
+	public Player(long id, String name, String email, String telephone, PlayerGroup playerGroup) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.telephone = telephone;
+		this.playerGroup = playerGroup;
+	}
+	
+	public Player(long id, String name, String email, String telephone, PlayerGroup playerGroup, String codename) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.telephone = telephone;
+		this.playerGroup = playerGroup;
+		this.codename = codename;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

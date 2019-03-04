@@ -29,11 +29,16 @@ import br.com.uol.testbackendjava.validator.OnUpdate;
 @Controller
 public class PlayerController {
 	
-	@Autowired
 	private PlayerService playerService;
 	
-	@Autowired
 	private PlayerGroupService playerGroupService;
+	
+	@Autowired
+	public PlayerController(PlayerService playerService, PlayerGroupService playerGroupService) {
+		super();
+		this.playerService = playerService;
+		this.playerGroupService = playerGroupService;
+	}
 	
 	@GetMapping("/")
 	public String list(@RequestParam(value = "search", required = false) String search, @PageableDefault(size = 10, sort = "id") Pageable pageable, Model model) {
@@ -43,14 +48,18 @@ public class PlayerController {
 		} else {
 			page = playerService.findByWord(search, pageable);
 		}
-		List<Sort.Order> sortOrders = page.getSort().stream().collect(Collectors.toList());
-		if (sortOrders.size() > 0) {
-			Sort.Order order = sortOrders.get(0);
-			model.addAttribute("sortProperty", order.getProperty());
-			model.addAttribute("sortDesc", order.getDirection() == Sort.Direction.DESC);
+		
+		if (page != null) {
+			List<Sort.Order> sortOrders = page.getSort().stream().collect(Collectors.toList());
+			if (sortOrders.size() > 0) {
+				Sort.Order order = sortOrders.get(0);
+				model.addAttribute("sortProperty", order.getProperty());
+				model.addAttribute("sortDesc", order.getDirection() == Sort.Direction.DESC);
+			}
+			model.addAttribute("page", page);
+			model.addAttribute("search", search != null ? search : "");
 		}
-		model.addAttribute("page", page);
-		model.addAttribute("search", search != null ? search : "");
+		
 		return "player-list";
 	}
 	
@@ -103,4 +112,5 @@ public class PlayerController {
 		player = playerService.save(player);
 		return list(null, PageRequest.of(0, 10, Sort.by("id")), model);
 	}
+	
 }

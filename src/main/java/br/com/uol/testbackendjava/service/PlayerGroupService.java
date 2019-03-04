@@ -1,5 +1,7 @@
 package br.com.uol.testbackendjava.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,10 @@ public class PlayerGroupService {
 	
 	public Iterable<PlayerGroup> findAll() {
 		return repository.findAll();
+	}
+	
+	public Optional<PlayerGroup> findOne(Long id) {
+		return repository.findById(id);
 	}
 		
 }
