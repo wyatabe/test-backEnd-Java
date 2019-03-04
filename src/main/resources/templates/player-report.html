@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Relatório de Jogadores do UOL</title>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"></link>
+		<link href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" rel="stylesheet">
+		<style>
+			table {
+				width: 100%;
+			}
+			
+			table td, table th {
+				border: 1px solid grey;
+			}
+			
+			table th {
+				user-select: none;
+				background: #eee;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Relatório de Jogadores do UOL</strong>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table id="player-table" class="table table-sm table-striped table-hover table-bordered">
+						<thead>
+							<tr>
+								<th data-sort-prop="id">Id</th>
+								<th data-sort-prop="name">Nome</th>
+								<th data-sort-prop="email">E-mail</th>
+								<th data-sort-prop="telephone">Telefone</th>
+								<th data-sort-prop="codename">Codinome</th>
+								<th data-sort-prop="playerGroup.name">Grupo</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${!players.empty}"  th:each="player : ${players}">
+								<td th:text="${player.id}"></td>
+								<td th:text="${player.name}"></td>
+								<td th:text="${player.email}"></td>
+								<td th:text="${player.telephone}"></td>
+								<td th:text="${player.codename}"></td>
+								<td th:text="${player.playerGroup.name}"></td>
+							</tr>
+							<tr th:if="${players.empty}">
+								<td colspan="6">Não há jogadores cadastrados.</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

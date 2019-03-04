@@ -25,6 +25,7 @@
 					
 					$("#searchclear").click(function(){
 					    $("#search").val('');
+					    $("#target").submit();
 					});
 					
 					//show up/down arrows
@@ -93,7 +94,7 @@
 				background: #ccf;
 			}
 			
-			#searchinput {
+			#search {
 				width: 200px;
 			}
 			
@@ -116,13 +117,14 @@
 				<strong>Jogadores cadastrados</strong>
 			</div>
 			<div class="panel-body">
-			    <form action="#" th:action="@{/}" method="get">
+			    <form id="target" action="#" th:action="@{/}" method="get">
 			    	<p>
 						<div class="btn-group">
 	  						<input type="text" class="form-control input-sm" maxlength="150" id="search" name="search" th:value="${search}"/>
 	  						<span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
 						</div>
-	    				<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>&nbsp;Buscar</button>
+	    				<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>&nbsp;&nbsp;Buscar</button>	    				
+	    				<a type="button" th:target="_blank" class="btn btn-sm btn-primary pull-right" th:href="@{/report}"><i class="fa fa-file-alt"></i>&nbsp;&nbsp;Visualizar Relatório de Jogadores</a>
 	    			</p>
 		        </form>
 			    
@@ -173,7 +175,7 @@
 								</td>
 							</tr>
 							<tr th:if="${page.content.empty}">
-								<td colspan="6">Não há jogadores cadastrados.</td>
+								<td colspan="6"></td>
 							</tr>
 						</tbody>
 					</table>

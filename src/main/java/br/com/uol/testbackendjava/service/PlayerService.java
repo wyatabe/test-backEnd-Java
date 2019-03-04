@@ -36,6 +36,10 @@ public class PlayerService {
 	@Autowired
 	private PlayerRepository repository;
 	
+	public Iterable<Player> findAll() {
+		return repository.findAll();
+	}
+	
 	public Page<Player> findAll(Pageable pageable) {
 		return repository.findAll(pageable);
 	}

@@ -113,4 +113,10 @@ public class PlayerController {
 		return list(null, PageRequest.of(0, 10, Sort.by("id")), model);
 	}
 	
+	@GetMapping("/report")
+	public String report(Model model) {
+		model.addAttribute("players", playerService.findAll());		
+		return "player-report";
+	}
+	
 }
