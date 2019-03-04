@@ -38,8 +38,14 @@
 						$("#unavaible").modal("show");
 					}
 				);
+				
+				$("form").submit(function() {
+					if ($("#telephone").val() == "") {
+						$("#telephone").attr("disabled", "disabled");
+					}
+					return true;
+				});
 			});
-		
 		</script>
 	</head>
 	<body>

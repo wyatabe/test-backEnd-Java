@@ -5,6 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.thymeleaf.util.StringUtils;
 
 import br.com.uol.testbackendjava.service.PlayerService;
 
@@ -21,7 +22,7 @@ public class UniquePlayerValidator implements ConstraintValidator<Unique, String
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		ConstraintValidatorContextImpl contextImpl = (ConstraintValidatorContextImpl) context;
 		String field = contextImpl.getConstraintViolationCreationContexts().get(0).getPath().toString();
-		if(service != null && service.exists(field, value)) {
+		if(service != null && !StringUtils.isEmptyOrWhitespace(value) && service.exists(field, value)) {
 			return false;
 		}
 		return true;
