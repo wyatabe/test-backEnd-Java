@@ -44,6 +44,7 @@
 						if ($("#telephone").val() == "") {
 							$("#telephone").attr("disabled", "disabled");
 						}
+						$("#div-btn").hide();
 						return true;
 					}
 				);
@@ -109,7 +110,7 @@
 							</div>
 						</fieldset>
 					</div>
-					<div class="form-group row">
+					<div id="div-btn" class="form-group row">
 						<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i>&nbsp;Salvar</button>
 						<a th:href="@{/}" class="btn btn-sm btn-default"><i class="fa fa-angle-left"></i>&nbsp;Voltar</a>
 					</div>
