@@ -64,7 +64,7 @@ public class Player implements Serializable {
 	@Column(nullable = false)
 	private String email;
 	
-	@Size(groups = {OnCreate.class, OnUpdate.class}, min = 14, message = "O telefone deve possuir no mínimo {min} dígitos.")
+	@Size(groups = {OnCreate.class, OnUpdate.class}, min = 14, message = "O telefone deve possuir no mínimo 10 dígitos.")
 	@Unique(groups = {OnCreate.class}, message = "Telefone já cadastrado.")
 	private String telephone;
 	
