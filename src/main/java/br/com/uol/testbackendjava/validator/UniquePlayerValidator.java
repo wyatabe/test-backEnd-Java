@@ -22,9 +22,11 @@ public class UniquePlayerValidator implements ConstraintValidator<Unique, String
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		ConstraintValidatorContextImpl contextImpl = (ConstraintValidatorContextImpl) context;
 		String field = contextImpl.getConstraintViolationCreationContexts().get(0).getPath().toString();
+		
 		if(service != null && !StringUtils.isEmptyOrWhitespace(value) && service.exists(field, value)) {
 			return false;
 		}
+		
 		return true;
 	}
 }
