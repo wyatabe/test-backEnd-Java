@@ -1,5 +1,5 @@
 
-# Teste para BackEnd para UOL HOST
+# Sistema de Cadastro de Jogadores do UOL
 O teste consiste em montar uma aplicação Java capaz de recuperar informações de um arquivo XML e de um arquivo JSON, persistir um cadastro em um banco de dados em memória ou em arquivo e listar os cadastros em uma interface simples.
 
 ## Pré-requisitos
